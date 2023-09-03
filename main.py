@@ -2,6 +2,7 @@ import pygame
 
 pygame.init()
 
+font20 = pygame.font.Font('freesansbold.ttf', 20)
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -9,10 +10,11 @@ GREEN = (0, 255, 0)
 
 WIDTH, HEIGHT = 900, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Pong")
+pygame.display.set_caption("Ping-Pong")
 
 clock = pygame.time.Clock()
 FPS = 30
+
 
 
 class Striker:
@@ -23,9 +25,7 @@ class Striker:
 		self.height = height
 		self.speed = speed
 		self.color = color
-		
 		self.playerRect = pygame.Rect(posx, posy, width, height)
-		
 		self.player = pygame.draw.rect(screen, self.color, self.playerRect)
 
 	def display(self):
@@ -33,13 +33,20 @@ class Striker:
 
 	def update(self, yFac):
 		self.posy = self.posy + self.speed*yFac
+
 		if self.posy <= 0:
 			self.posy = 0
-		
 		elif self.posy + self.height >= HEIGHT:
 			self.posy = HEIGHT-self.height
 
 		self.playerRect = (self.posx, self.posy, self.width, self.height)
+
+	def displayScore(self, text, score, x, y, color):
+		text = font20.render(text+str(score), True, color)
+		textRect = text.get_rect()
+		textRect.center = (x, y)
+
+		screen.blit(text, textRect)
 
 	def getRect(self):
 		return self.playerRect
@@ -66,7 +73,6 @@ class Ball:
 		self.posx += self.speed*self.xFac
 		self.posy += self.speed*self.yFac
 
-	
 		if self.posy <= 0 or self.posy >= HEIGHT:
 			self.yFac *= -1
 
@@ -85,7 +91,6 @@ class Ball:
 		self.xFac *= -1
 		self.firstTime = 1
 
-
 	def hit(self):
 		self.xFac *= -1
 
@@ -98,9 +103,11 @@ def main():
 
 	player1 = Striker(20, 0, 10, 100, 10, GREEN)
 	player2 = Striker(WIDTH-30, 0, 10, 100, 10, GREEN)
-	ball = Ball(WIDTH//2, HEIGHT//2, 15, 7, WHITE)
+	ball = Ball(WIDTH//2, HEIGHT//2, 10, 7, WHITE)
 
 	listOfPlayers = [player1, player2]
+
+	player1Score, player2Score = 0, 0
 	player1YFac, player2YFac = 0, 0
 
 	while running:
@@ -128,14 +135,26 @@ def main():
 			if pygame.Rect.colliderect(ball.getRect(), player.getRect()):
 				ball.hit()
 
-		
 		player1.update(player1YFac)
 		player2.update(player2YFac)
 		point = ball.update()
-		
+
+		if point == -1:
+			player1Score += 1
+		elif point == 1:
+			player2Score += 1
+
+		if point:
+			ball.reset()
+
 		player1.display()
 		player2.display()
 		ball.display()
+
+		player1.displayScore("Player_1 : ",
+						player1Score, 100, 20, WHITE)
+		player2.displayScore("Player_2 : ",
+						player2Score, WIDTH-100, 20, WHITE)
 
 		pygame.display.update()
 		clock.tick(FPS)	
