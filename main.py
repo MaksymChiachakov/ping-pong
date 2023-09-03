@@ -33,8 +33,6 @@ class Striker:
 
 	def update(self, yFac):
 		self.posy = self.posy + self.speed*yFac
-
-		
 		if self.posy <= 0:
 			self.posy = 0
 		
@@ -133,20 +131,11 @@ def main():
 		
 		player1.update(player1YFac)
 		player2.update(player2YFac)
-		
-
-		
-	
-
-		
-	
-
+		point = ball.update()
 		
 		player1.display()
 		player2.display()
 		ball.display()
-
-		
 
 		pygame.display.update()
 		clock.tick(FPS)	
