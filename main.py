@@ -24,12 +24,12 @@ class Striker:
 		self.speed = speed
 		self.color = color
 		
-		self.geekRect = pygame.Rect(posx, posy, width, height)
+		self.playerRect = pygame.Rect(posx, posy, width, height)
 		
-		self.geek = pygame.draw.rect(screen, self.color, self.geekRect)
+		self.player = pygame.draw.rect(screen, self.color, self.playerRect)
 
 	def display(self):
-		self.geek = pygame.draw.rect(screen, self.color, self.geekRect)
+		self.player = pygame.draw.rect(screen, self.color, self.playerRect)
 
 	def update(self, yFac):
 		self.posy = self.posy + self.speed*yFac
@@ -41,10 +41,10 @@ class Striker:
 		elif self.posy + self.height >= HEIGHT:
 			self.posy = HEIGHT-self.height
 
-		self.geekRect = (self.posx, self.posy, self.width, self.height)
+		self.playerRect = (self.posx, self.posy, self.width, self.height)
 
 	def getRect(self):
-		return self.geekRect
+		return self.playerRect
 
 
 class Ball:
